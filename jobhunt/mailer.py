@@ -20,8 +20,20 @@ def send(subject: str, html_body: str) -> None:
     msg.set_content("This digest is HTML. Open it in an HTML-capable client.")
     msg.add_alternative(html_body, subtype="html")
 
-    with smtplib.SMTP(host, port, timeout=30) as s:
-        s.starttls()
-        s.login(user, password)
-        s.send_message(msg)
+    if port == 465:
+        with smtplib.SMTP_SSL(host, port, timeout=30) as s:
+            s.login(user, password)
+            s.send_message(msg)
+    else:
+        try:
+            with smtplib.SMTP(host, port, timeout=30) as s:
+                s.starttls()
+                s.login(user, password)
+                s.send_message(msg)
+        except (smtplib.SMTPConnectError, smtplib.SMTPServerDisconnected, TimeoutError, OSError):
+            # Fallback to port 465 SSL if port 587 has connectivity issues
+            with smtplib.SMTP_SSL(host, 465, timeout=30) as s:
+                s.login(user, password)
+                s.send_message(msg)
+
     print(f"  mailed -> {to_addr}")

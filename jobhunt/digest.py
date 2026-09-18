@@ -78,8 +78,8 @@ def _card(j: Job) -> str:
 
 def build(jobs: list[Job], scanned: int, candidates: int, stats: dict) -> tuple[str, str]:
     today = datetime.now().strftime("%d %b %Y")
-    subject = (f"{len(jobs)} job{'s' if len(jobs) != 1 else ''} worth your time — {today}"
-               if jobs else f"No new matches today — {today}")
+    subject = (f"{len(jobs)} job{'s' if len(jobs) != 1 else ''} worth your time - {today}"
+               if jobs else f"No new matches today - {today}")
 
     if jobs:
         body = "".join(_card(j) for j in jobs)

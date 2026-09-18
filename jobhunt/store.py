@@ -22,21 +22,42 @@ class Store:
     def unseen(self, jobs: list[Job]) -> list[Job]:
         return [j for j in jobs if j.job_id not in self.data]
 
-    def record(self, jobs: list[Job], emailed: bool) -> None:
+    def unemailed(self, jobs: list[Job]) -> list[Job]:
+        """Jobs that have either never been seen OR have never been emailed."""
+        return [j for j in jobs if not self.data.get(j.job_id, {}).get("emailed")]
+
+    def record(self, jobs: list[Job], emailed: bool = False,
+               emailed_ids: set[str] | None = None) -> None:
         now = datetime.now(timezone.utc).isoformat(timespec="seconds")
         for j in jobs:
-            self.data.setdefault(j.job_id, {
-                "first_seen": now,
-                "company": j.company,
-                "title": j.title,
-                "location": j.location,
-                "url": j.url,
-                "score": j.score,
-                "reason": j.reason,
-                "emailed": emailed,
-                "applied": False,
-                "applied_on": None,
-            })
+            is_emailed = (j.job_id in emailed_ids) if emailed_ids is not None else emailed
+            if j.job_id in self.data:
+                entry = self.data[j.job_id]
+                if j.score is not None:
+                    entry["score"] = j.score
+                if j.reason:
+                    entry["reason"] = j.reason
+                if is_emailed:
+                    entry["emailed"] = True
+            else:
+                self.data[j.job_id] = {
+                    "first_seen": now,
+                    "company": j.company,
+                    "title": j.title,
+                    "location": j.location,
+                    "url": j.url,
+                    "score": j.score,
+                    "reason": j.reason,
+                    "emailed": is_emailed,
+                    "applied": False,
+                    "applied_on": None,
+                }
+        self.save()
+
+    def mark_emailed(self, job_ids: list[str] | set[str]) -> None:
+        for jid in job_ids:
+            if jid in self.data:
+                self.data[jid]["emailed"] = True
         self.save()
 
     def mark_applied(self, job_id: str) -> bool:

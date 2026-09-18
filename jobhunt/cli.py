@@ -113,8 +113,25 @@ def cmd_run(args) -> int:
     print("\n[2/5] filtering")
     jobs = prefilter(jobs, filters)
     passed_filters = len(jobs)
-    jobs = store.unseen(jobs)
-    print(f"  new since last run: {len(jobs)}")
+
+    # Determine whether email should be sent
+    should_send = False
+    if getattr(args, "no_send", False):
+        should_send = False
+    elif getattr(args, "send", False):
+        should_send = True
+    elif cfg.get("send_email", False):
+        should_send = True
+    elif os.getenv("SEND_EMAIL", "").lower() in ("true", "1", "yes"):
+        should_send = True
+    elif bool(os.getenv("SMTP_USER") and os.getenv("SMTP_PASS")):
+        should_send = True
+
+    if getattr(args, "force", False):
+        print("  --force passed: including previously seen jobs")
+    else:
+        jobs = store.unseen(jobs)
+    print(f"  new / candidate jobs: {len(jobs)}")
     candidates = len(jobs)
     if args.limit:
         jobs = jobs[:args.limit]
@@ -124,6 +141,11 @@ def cmd_run(args) -> int:
         subject, doc = digest_mod.build([], scanned, 0, store.stats())
         path = digest_mod.write(doc, cfg.get("digest_file", "out/digest.html"))
         print(f"\nnothing new today. preview: {path}")
+        if should_send:
+            try:
+                mailer.send(subject, doc)
+            except Exception as e:
+                print(f"  ! email failed ({type(e).__name__}: {e}) — digest still on disk")
         return 0
 
     # ---- 3. screen
@@ -151,7 +173,7 @@ def cmd_run(args) -> int:
               "  Check the warnings above (bad key, rate limit, wrong model id).")
         return 1
 
-    threshold = float(cfg.get("score_threshold", 7.0))
+    threshold = float(cfg.get("score_threshold", 4.0))
     top_n = int(cfg.get("max_per_digest", 5))
     shortlist = sorted([j for j in jobs if (j.score or 0) >= threshold],
                        key=lambda j: j.score or 0, reverse=True)[:top_n]
@@ -180,20 +202,21 @@ def cmd_run(args) -> int:
     print(f"  wrote {path}")
 
     sent = False
-    if args.send:
+    if should_send:
         try:
             mailer.send(subject, doc)
             sent = True
         except Exception as e:  # bad app password, blocked port, offline
             print(f"  ! email failed ({type(e).__name__}: {e}) — digest still on disk")
     else:
-        print("  --send not passed, email skipped")
+        print("  email sending skipped (--no-send or disabled)")
 
-    store.record(jobs, emailed=sent)
+    emailed_ids = {j.job_id for j in shortlist} if sent else set()
+    store.record(jobs, emailed=sent, emailed_ids=emailed_ids)
     csv_path = store.export_csv(cfg.get("tracker_csv", "out/tracker.csv"))
 
     print(f"\nfunnel: {scanned} scanned -> {passed_filters} passed filters "
-          f"-> {candidates} new -> {len(shortlist)} in digest")
+          f"-> {candidates} candidate -> {len(shortlist)} in digest")
     print(f"subject: {subject}")
     print(f"tracker: {store.stats()}  ({csv_path})")
     return 0
@@ -234,7 +257,10 @@ def main(argv=None) -> int:
                     help="keyword = offline stub, needs no API key ('claude' is an "
                          "alias for 'llm', kept for older docs)")
     sr.add_argument("--no-draft", action="store_true", help="skip the expensive stage")
-    sr.add_argument("--send", action="store_true", help="actually email the digest")
+    send_grp = sr.add_mutually_exclusive_group()
+    send_grp.add_argument("--send", action="store_true", default=None, help="actually email the digest")
+    send_grp.add_argument("--no-send", action="store_true", help="do not email the digest (dry-run)")
+    sr.add_argument("--force", action="store_true", help="re-evaluate all jobs, ignoring seen.json cache")
     sr.add_argument("--limit", type=int, help="cap jobs sent to the LLM (cost guard)")
     sr.set_defaults(func=cmd_run)
 

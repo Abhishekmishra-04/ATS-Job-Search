@@ -23,16 +23,33 @@
 # noise and makes the prefilter counts impossible to reason about.
 
 companies:
-  - {ats: greenhouse, slug: stripe,      name: Stripe}
-  - {ats: greenhouse, slug: databricks,  name: Databricks}
-  - {ats: greenhouse, slug: cloudflare,  name: Cloudflare}
-  - {ats: greenhouse, slug: figma,       name: Figma}
-  - {ats: greenhouse, slug: dropbox,     name: Dropbox}
-  - {ats: greenhouse, slug: coinbase,    name: Coinbase}
-  - {ats: greenhouse, slug: reddit,      name: Reddit}
-  - {ats: lever,      slug: voleon,      name: Voleon}
+  - {ats: greenhouse, slug: razorpaysoftwareprivatelimited, name: Razorpay}
+  - {ats: greenhouse, slug: groww, name: Groww}
+  - {ats: lever, slug: cred, name: CRED}
+  - {ats: greenhouse, slug: inmobi, name: InMobi}
+  - {ats: greenhouse, slug: hackerrank, name: HackerRank}
+  - {ats: greenhouse, slug: gitlab, name: GitLab}
+  - {ats: lever, slug: meesho, name: Meesho}
+  - {ats: ashby, slug: notion, name: Notion}
+  - {ats: ashby, slug: zapier, name: Zapier}
+  - {ats: greenhouse, slug: togetherai, name: Together AI}
+  - {ats: ashby, slug: deel, name: Deel}
+  - {ats: ashby, slug: decagon, name: Decagon}
+  - {ats: greenhouse, slug: affirm, name: Affirm}
+  - {ats: greenhouse, slug: brex, name: Brex}
 
-  - {ats: ashby,      slug: openai,      name: OpenAI}
-  - {ats: ashby,      slug: ramp,        name: Ramp}
-  - {ats: ashby,      slug: linear,      name: Linear}
-  - {ats: ashby,      slug: vanta,       name: Vanta}
+  - {ats: ashby, slug: ontic, name: Ontic}
+  - {ats: ashby, slug: almabase, name: Almabase}
+  - {ats: ashby, slug: plane, name: Plane}
+  - {ats: ashby, slug: furtherai, name: FurtherAI}
+  - {ats: ashby, slug: ema, name: Ema}
+  - {ats: ashby, slug: emergence, name: Emergence}
+  - {ats: ashby, slug: reacher, name: Reacher}
+  - {ats: ashby, slug: sarvam, name: Sarvam AI}
+  - {ats: ashby, slug: bolna, name: Bolna}
+  - {ats: ashby, slug: junipersquare, name: Juniper Square}
+  - {ats: lever, slug: veeva, name: Veeva Systems}
+  - {ats: lever, slug: drivetrain, name: Drivetrain}
+  - {ats: ashby, slug: ramp, name: Ramp}
+  - {ats: greenhouse, slug: anthropic, name: Anthropic}
+  - {ats: ashby, slug: vercel, name: Vercel}

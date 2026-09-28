@@ -1,0 +1,42 @@
+{
+  "name": "Abhishek Kumar Mishra",
+  "current_title": "Software Engineer",
+  "years_experience": 0.5,
+  "core_skills": [
+    "Python",
+    "FastAPI",
+    "JavaScript",
+    "React.js",
+    "REST APIs",
+    "OpenAI API",
+    "LangChain",
+    "Node.js",
+    "Docker",
+    "PostgreSQL",
+    "MySQL",
+    "MongoDB",
+    "Object-Oriented Programming (OOP)",
+    "Data Structures & Algorithms",
+    "Git/GitHub",
+    "OAuth2"
+  ],
+  "domains": [
+    "backend development",
+    "full stack development",
+    "web development",
+    "AI/LLM application development"
+  ],
+  "notable_projects": [
+    "AI-Powered Chatbot: Built a containerized FastAPI backend with OAuth2 authentication and integrated GPT-4/LangChain for real-time, context-aware query handling.",
+    "AI-Powered Portfolio Website: Developed a full-stack React app with live AI chat integration and achieved a 25% page load speed improvement via code-splitting and memoization."
+  ],
+  "education": "B.Tech in Computer Science & Engineering (AI & ML), Galgotias University (2020–2024)",
+  "target_titles": [
+    "Backend Engineer",
+    "Full Stack Engineer",
+    "Software Engineer",
+    "Python Developer",
+    "AI Application Developer"
+  ],
+  "seniority": "new-grad"
+}

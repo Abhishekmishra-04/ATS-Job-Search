@@ -23,8 +23,10 @@ permissions:
 
 jobs:
   digest:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE20: true
 
     steps:
       - uses: actions/checkout@v4
@@ -51,32 +53,33 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Write profile.json
-        # profile.json is gitignored (it is derived from your resume), so CI
-        # gets it from a secret. Create it locally with
-        #   python -m jobhunt profile --resume resume.pdf
-        # then paste the file contents into the PROFILE_JSON repo secret.
+        # Use PROFILE_JSON secret if provided; otherwise fallback to the committed profile.json
         env:
           PROFILE_JSON: ${{ secrets.PROFILE_JSON }}
         run: |
-          if [ -z "$PROFILE_JSON" ]; then
-            echo "::error::PROFILE_JSON secret is empty — see the README"
+          if [ -n "$PROFILE_JSON" ]; then
+            printf '%s' "$PROFILE_JSON" > profile.json
+            echo "profile.json loaded from PROFILE_JSON secret"
+          elif [ -f profile.json ]; then
+            echo "profile.json loaded from repository file"
+          else
+            echo "::error::profile.json not found in repository and PROFILE_JSON secret is empty — see the README"
             exit 1
           fi
-          printf '%s' "$PROFILE_JSON" > profile.json
           python -c "import json;json.load(open('profile.json'));print('profile.json parsed OK')"
 
       - name: Run the pipeline
         env:
-          LLM_PROVIDER: ${{ vars.LLM_PROVIDER || 'anthropic' }}
-          SCREEN_PROVIDER: ${{ vars.SCREEN_PROVIDER }}
-          DRAFT_PROVIDER: ${{ vars.DRAFT_PROVIDER }}
-          SCREEN_MODEL: ${{ vars.SCREEN_MODEL }}
-          DRAFT_MODEL: ${{ vars.DRAFT_MODEL }}
+          LLM_PROVIDER: ${{ vars.LLM_PROVIDER || 'gemini' }}
+          SCREEN_PROVIDER: ${{ vars.SCREEN_PROVIDER || 'gemini' }}
+          DRAFT_PROVIDER: ${{ vars.DRAFT_PROVIDER || 'gemini' }}
+          SCREEN_MODEL: ${{ vars.SCREEN_MODEL || 'gemini-3.5-flash-lite' }}
+          DRAFT_MODEL: ${{ vars.DRAFT_MODEL || 'gemini-2.5-flash' }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-          SMTP_HOST: ${{ secrets.SMTP_HOST }}
-          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST || 'smtp.gmail.com' }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT || '587' }}
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_PASS: ${{ secrets.SMTP_PASS }}
           MAIL_TO: ${{ secrets.MAIL_TO }}

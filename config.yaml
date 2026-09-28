@@ -112,6 +112,7 @@ max_per_digest: 5         # hard cap on expensive draft calls per run
 
 # Automatically send email digest when SMTP is configured
 send_email: true
+send_empty_digest: false  # only email when there are matching job details
 
 # --- paths ------------------------------------------------------------------
 companies_file: companies.yaml

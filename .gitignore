@@ -1,10 +1,9 @@
 # secrets
 .env
 
-# your actual resume and the profile derived from it
+# your actual resume
 resume.*
 my_resume.pdf
-profile.json
 !profile.example.json
 # generated output
 out/

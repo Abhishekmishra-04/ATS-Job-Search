@@ -130,7 +130,7 @@ def cmd_run(args) -> int:
     if getattr(args, "force", False):
         print("  --force passed: including previously seen jobs")
     else:
-        jobs = store.unseen(jobs)
+        jobs = store.unemailed(jobs)
     print(f"  new / candidate jobs: {len(jobs)}")
     candidates = len(jobs)
     if args.limit:
@@ -138,32 +138,50 @@ def cmd_run(args) -> int:
         print(f"  --limit {args.limit} applied")
 
     if not jobs:
-        subject, doc = digest_mod.build([], scanned, 0, store.stats())
-        path = digest_mod.write(doc, cfg.get("digest_file", "out/digest.html"))
-        print(f"\nnothing new today. preview: {path}")
-        if should_send:
+        print(f"\nnothing new today.")
+        if should_send and cfg.get("send_empty_digest", False):
+            subject, doc = digest_mod.build([], scanned, 0, store.stats())
+            path = digest_mod.write(doc, cfg.get("digest_file", "out/digest.html"))
             try:
                 mailer.send(subject, doc)
             except Exception as e:
                 print(f"  ! email failed ({type(e).__name__}: {e}) — digest still on disk")
+        else:
+            print("  empty digest email skipped")
         return 0
 
     # ---- 3. screen
     scorer = "keyword" if args.scorer == "keyword" else "llm"
-    if scorer == "keyword":
-        print(f"\n[3/5] screening {len(jobs)} jobs (keyword stub — DEV ONLY)")
-        llm.keyword_screen(jobs, profile)
+
+    # Reuse cached scores for previously screened jobs
+    unscored_jobs = []
+    for j in jobs:
+        cached = store.data.get(j.job_id)
+        if cached and cached.get("score") is not None:
+            j.score = cached.get("score")
+            j.reason = cached.get("reason")
+        else:
+            unscored_jobs.append(j)
+
+    if unscored_jobs:
+        if scorer == "keyword":
+            print(f"\n[3/5] screening {len(unscored_jobs)} jobs (keyword stub — DEV ONLY)")
+            llm.keyword_screen(unscored_jobs, profile)
+        else:
+            try:
+                provider, model = resolve("screen")
+            except LLMError as e:
+                print(f"\n{e}\nNo key? Run with --scorer keyword for an offline dry run.")
+                return 1
+            cached_count = len(jobs) - len(unscored_jobs)
+            print(f"\n[3/5] screening {len(unscored_jobs)} new jobs via {provider.name}/{model}"
+                  + (f" ({cached_count} cached)" if cached_count else ""))
+            llm.screen(unscored_jobs, profile,
+                       batch_size=int(cfg.get("screen_batch_size", 8)),
+                       jd_chars=int(cfg.get("screen_jd_chars", 1400)),
+                       provider=provider, model=model)
     else:
-        try:
-            provider, model = resolve("screen")
-        except LLMError as e:
-            print(f"\n{e}\nNo key? Run with --scorer keyword for an offline dry run.")
-            return 1
-        print(f"\n[3/5] screening {len(jobs)} jobs via {provider.name}/{model}")
-        llm.screen(jobs, profile,
-                   batch_size=int(cfg.get("screen_batch_size", 8)),
-                   jd_chars=int(cfg.get("screen_jd_chars", 1400)),
-                   provider=provider, model=model)
+        print(f"\n[3/5] all {len(jobs)} candidate jobs already scored (cached)")
 
     # If every batch failed, the digest would be empty and — worse — we would
     # record these jobs as seen and never show them again. Bail instead.
@@ -183,6 +201,18 @@ def cmd_run(args) -> int:
     print(f"\n[4/5] drafting kits for {len(shortlist)}")
     if not shortlist:
         print("  nothing cleared the threshold")
+        if should_send and cfg.get("send_empty_digest", False):
+            subject, doc = digest_mod.build([], scanned, candidates, store.stats())
+            path = digest_mod.write(doc, cfg.get("digest_file", "out/digest.html"))
+            try:
+                mailer.send(subject, doc)
+            except Exception as e:
+                print(f"  ! email failed ({type(e).__name__}: {e})")
+        else:
+            print("  empty digest email skipped (send_empty_digest is false)")
+        store.record(jobs, emailed=False)
+        store.export_csv(cfg.get("tracker_csv", "out/tracker.csv"))
+        return 0
     elif scorer == "keyword" or args.no_draft:
         print("  skipped (keyword scorer / --no-draft)")
     else:

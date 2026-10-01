@@ -25,8 +25,6 @@ jobs:
   digest:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE20: true
 
     steps:
       - uses: actions/checkout@v4

@@ -257,7 +257,7 @@ PROVIDERS = {
 # after setting nothing but a key.
 DEFAULT_MODELS = {
     "anthropic": {"screen": "claude-haiku-4-5-20251001", "draft": "claude-sonnet-5"},
-    "gemini": {"screen": "gemini-2.0-flash", "draft": "gemini-2.0-flash"},
+    "gemini": {"screen": "gemini-3.5-flash-lite", "draft": "gemini-2.5-flash"},
     "groq": {"screen": "llama-3.3-70b-versatile", "draft": "llama-3.3-70b-versatile"},
     "openai-compatible": {"screen": "gpt-4o-mini", "draft": "gpt-4o"},
     "ollama": {"screen": "llama3.1", "draft": "llama3.1"},

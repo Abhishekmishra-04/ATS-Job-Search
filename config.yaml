@@ -61,9 +61,11 @@ filters:
     - '\bdata engineer\b'
     - '\bcloud data engineer\b'
 
-    # Associate / Junior / Entry-Level / Fresher roles
+    # Associate / Junior / Entry-Level / Fresher & Tech Intern roles
     - '\b(junior|associate|graduate|entry[\s-]?level|fresher|trainee)\b.*\b(engineer|developer)\b'
     - '\b(engineer|developer)\b.*\b(junior|associate|graduate|entry[\s-]?level|fresher|trainee)\b'
+    - '\b(software|sde|backend|frontend|full[\s-]?stack|web|data|python|ai|machine learning)\b.*\b(intern|internship)\b'
+    - '\b(intern|internship)\b.*\b(software|sde|backend|frontend|full[\s-]?stack|web|data|python|ai|machine learning)\b'
     - '\bgraduate engineer trainee\b'
     - '\bsoftware engineer trainee\b'
     - '\bfresher\b'
@@ -87,8 +89,8 @@ filters:
     - '\bsr\.?\s*(software|backend|frontend|full[\s-]?stack|engineer|developer)\b'
     - '\b(director|vp|vice president|head of|chief|cto)\b'
     - '\b(manager|management)\b'
-    - '\b(intern|internship|apprentice)\b'
-    - '\b(sales|account executive|marketing|recruit|support|success)\b'
+    - '\b(apprentice)\b'
+    - '\b(sales|account executive|marketing|recruit|support|success|finance|hr|legal)\b'
     - '\b(ios|android|mobile|game|designer)\b'
     - '\b(data scientist|machine learning scientist|research scientist)\b'
     - '\bdevrel\b'

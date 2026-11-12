@@ -157,7 +157,7 @@ def cmd_run(args) -> int:
     unscored_jobs = []
     for j in jobs:
         cached = store.data.get(j.job_id)
-        if cached and cached.get("score") is not None:
+        if not getattr(args, "force", False) and cached and cached.get("score") is not None:
             j.score = cached.get("score")
             j.reason = cached.get("reason")
         else:

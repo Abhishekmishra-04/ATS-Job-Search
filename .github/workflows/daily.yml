@@ -12,6 +12,10 @@ on:
         description: "Skip the email, just build the digest artifact"
         type: boolean
         default: false
+      force:
+        description: "Force re-screen all postings (bypass seen cache)"
+        type: boolean
+        default: false
 
 # Two runs sharing one dedupe store would race. Queue them instead.
 concurrency:
@@ -82,10 +86,14 @@ jobs:
           SMTP_PASS: ${{ secrets.SMTP_PASS }}
           MAIL_TO: ${{ secrets.MAIL_TO }}
         run: |
+          EXTRA_FLAGS=""
+          if [ "${{ inputs.force }}" = "true" ]; then
+            EXTRA_FLAGS="--force"
+          fi
           if [ "${{ inputs.dry_run }}" = "true" ]; then
-            python -m jobhunt run
+            python -m jobhunt run $EXTRA_FLAGS
           else
-            python -m jobhunt run --send
+            python -m jobhunt run --send $EXTRA_FLAGS
           fi
 
       - name: Upload digest

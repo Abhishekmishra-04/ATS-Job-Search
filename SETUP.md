@@ -362,7 +362,7 @@ for you on a schedule, for free, with your laptop closed.
    Run workflow**, tick **dry_run**, and run it. That builds the digest and
    uploads it as a downloadable artifact without emailing anyone.
 
-5. If that's green, you're done. It runs at **06:00 IST every weekday**.
+5. If that's green, you're done. It runs at **09:00 IST every day**.
 
 To change the time, edit the `cron` line in `.github/workflows/daily.yml`. It's
 in UTC, so subtract 5 hours 30 minutes from your intended IST time.

@@ -54,7 +54,16 @@ filters:
     - '\bai application\b.*\b(engineer|developer)\b'
     - '\bllm application\b.*\b(engineer|developer)\b'
 
-    # Associate / Junior roles
+    # Data Analyst & Data Engineering roles
+    - '\bdata analyst\b'
+    - '\bdata analytics\b'
+    - '\bbusiness analyst\b'
+    - '\bdata engineer\b'
+    - '\bcloud data engineer\b'
+
+    # Associate / Junior / Entry-Level roles
+    - '\b(junior|associate|graduate|entry[\s-]?level)\b.*\b(engineer|developer)\b'
+    - '\b(engineer|developer)\b.*\b(junior|associate|graduate|entry[\s-]?level)\b'
     - '\bassociate software engineer\b'
     - '\bjunior software engineer\b'
     - '\bjunior backend engineer\b'
@@ -107,7 +116,7 @@ filters:
 screen_batch_size: 8      # jobs per screening call. Higher = cheaper, sloppier.
 screen_jd_chars: 1400     # JD truncation for screening
 draft_jd_chars: 6000      # JD truncation for drafting
-score_threshold: 4.0      # below this, no draft and no digest slot
+score_threshold: 5.0      # below this (under 50% match), no draft and no digest slot
 max_per_digest: 5         # hard cap on expensive draft calls per run
 
 # Automatically send email digest when SMTP is configured

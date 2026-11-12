@@ -128,12 +128,11 @@ Score 0-10 on genuine fit:
   5-6   plausible but real gaps
   0-4   wrong seniority, wrong stack, or a hard requirement the candidate lacks
 
-Seniority mismatch is the most common failure: a 3-year engineer scoring an 8
-on a Staff role is wrong. Penalise it hard, in both directions — a senior
-engineer does not want an internship either. Do the same for hard requirements
-the candidate plainly does not meet: security clearance, a specific degree, a
-named technology with a year count they cannot hit, or a country they cannot
-work in.
+CRITICAL SENIORITY & EXPERIENCE RULE:
+The candidate is a FRESHER / 2024 COLLEGE GRADUATE looking ONLY for Entry-Level, Fresher, Associate, Graduate, Trainee, SDE-1, or 0-1 year experience roles.
+- STRICTLY REJECT (score 0-3): Any role requiring 2+, 3+, or more years of prior full-time experience, mid-level roles, or experienced hires. If the JD states a minimum of 2+ years of experience that a fresher lacks, score it 0-3 with reason "Requires X+ years experience; candidate is a fresher". Do NOT inflate to 5 or 6.
+- ACCEPT (score 7-10): Genuine Fresher, Entry-Level, Graduate, Junior, Associate, SDE-1, or 0-1 year roles matching candidate's stack.
+- Do the same for hard requirements the candidate plainly does not meet: security clearance, a specific degree, a named technology with a year count they cannot hit, or a country they cannot work in.
 
 Do not inflate scores to be encouraging. Most postings are a 4.
 

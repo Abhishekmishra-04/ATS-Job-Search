@@ -61,9 +61,12 @@ filters:
     - '\bdata engineer\b'
     - '\bcloud data engineer\b'
 
-    # Associate / Junior / Entry-Level roles
-    - '\b(junior|associate|graduate|entry[\s-]?level)\b.*\b(engineer|developer)\b'
-    - '\b(engineer|developer)\b.*\b(junior|associate|graduate|entry[\s-]?level)\b'
+    # Associate / Junior / Entry-Level / Fresher roles
+    - '\b(junior|associate|graduate|entry[\s-]?level|fresher|trainee)\b.*\b(engineer|developer)\b'
+    - '\b(engineer|developer)\b.*\b(junior|associate|graduate|entry[\s-]?level|fresher|trainee)\b'
+    - '\bgraduate engineer trainee\b'
+    - '\bsoftware engineer trainee\b'
+    - '\bfresher\b'
     - '\bassociate software engineer\b'
     - '\bjunior software engineer\b'
     - '\bjunior backend engineer\b'
@@ -80,9 +83,11 @@ filters:
   exclude_titles:
     - '\b(staff|principal|distinguished|fellow|architect)\b'
     - '\bsenior\b'
+    - '\b(lead|tech lead|team lead)\b'
+    - '\bsr\.?\s*(software|backend|frontend|full[\s-]?stack|engineer|developer)\b'
     - '\b(director|vp|vice president|head of|chief|cto)\b'
     - '\b(manager|management)\b'
-    - '\b(intern|internship|apprentice|trainee)\b'
+    - '\b(intern|internship|apprentice)\b'
     - '\b(sales|account executive|marketing|recruit|support|success)\b'
     - '\b(ios|android|mobile|game|designer)\b'
     - '\b(data scientist|machine learning scientist|research scientist)\b'
